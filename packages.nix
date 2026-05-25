@@ -1,6 +1,7 @@
 {
   pkgs,
   polarbear,
+  llm-agents,
   ...
 }:
 
@@ -15,11 +16,14 @@ in
       fd
       bat
       eza
+      opencode-desktop
       ripgrep
       speedtest-rs
       rustup
+      dust
+      glow
       gcc
-      nodejs
+      nodejs_latest
       openssh
       fastfetch
       rclone
@@ -29,9 +33,14 @@ in
       opencode
       gemini-cli
       nb
+      llm-agents.packages.${system}.pi
       xonsh
       polarbear.packages.${system}.nixvim
       polarbear.packages.${system}.tools-ssh
+      # pi-voice extension dependencies
+      whisper-cpp
+      piper-tts
+      espeak-ng
     ]
     ++ lib.optionals (!isAarch64) [
       ghostty

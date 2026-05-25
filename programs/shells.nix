@@ -5,7 +5,7 @@
     enable = true;
     shellAliases = {
       "cd" = "z";
-      "cat" = "bat";
+      "cat" = "bat -p";
       "grep" = "rg";
     };
     configFile.text = ''
@@ -25,12 +25,14 @@
     '';
   };
 
+  home.packages = [ pkgs.xonsh ];
+
   home.file.".xonshrc".text = ''
     $UPDATE_OS_ENVIRON = True
     $XONSH_SHOW_DOT_CHAR = True
 
     aliases['ls'] = 'eza'
-    aliases['cat'] = 'bat'
+    aliases['cat'] = 'bat -p'
 
     execx($(starship init xonsh))
     execx($(zoxide init xonsh))
@@ -79,7 +81,7 @@
     shellAliases = {
       nvim = "VIMINIT='set keyprotocol= | let &term=&term' nvim";
       ls = "eza";
-      cat = "bat";
+      cat = "bat -p";
       cd = "z";
     };
     initExtra = ''
@@ -106,7 +108,6 @@
     enable = true;
     enableNushellIntegration = true;
     enableBashIntegration = true;
-
   };
 
   programs.carapace = {

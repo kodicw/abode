@@ -8,6 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     polarbear.url = "github:kodicw/polarbear";
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =
@@ -16,9 +17,34 @@
       nixpkgs,
       home-manager,
       polarbear,
+      llm-agents,
       ...
     }:
+    let
+      inherit (nixpkgs) lib;
+      systems = lib.intersectLists lib.systems.flakeExposed (lib.attrNames nixpkgs.legacyPackages);
+
+      forAllSystems = lib.genAttrs systems;
+
+      mkHome =
+        system: username:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = {
+            inherit polarbear llm-agents;
+            userModule = import ./config/users/${username}.nix;
+          };
+          modules = [
+            self.homeManagerModules.default
+          ];
+        };
+    in
     {
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
       homeManagerModules = {
         activation-crostini-icons = ./activation/crostini-icons.nix;
         config-home = ./config/home.nix;
@@ -30,6 +56,15 @@
         programs-ai = ./programs/ai.nix;
         session = ./session.nix;
         systemd-opencode-server = ./systemd/opencode-server.nix;
+
+        skills-nix-nixos-guide = ./skills/nix-nixos-guide;
+        skills-justfile-guide = ./skills/justfile-guide;
+        skills-xonsh-guide = ./skills/xonsh-guide;
+        skills-pi-coding-agent = ./skills/pi-coding-agent;
+        skills-gh-cli = ./skills/gh-cli;
+        skills-contributing-guide = ./skills/contributing-guide;
+        skills-opentofu-guide = ./skills/opentofu-guide;
+        skills-home-manager-guide = ./skills/home-manager-guide;
 
         # Combined default module for convenience
         default =
@@ -44,66 +79,32 @@
               self.homeManagerModules.programs-terminals
               self.homeManagerModules.programs-ai
               self.homeManagerModules.session
+              self.homeManagerModules.skills-nix-nixos-guide
+              self.homeManagerModules.skills-justfile-guide
+              self.homeManagerModules.skills-xonsh-guide
+              self.homeManagerModules.skills-pi-coding-agent
+              self.homeManagerModules.skills-gh-cli
+              self.homeManagerModules.skills-contributing-guide
+              self.homeManagerModules.skills-opentofu-guide
+              self.homeManagerModules.skills-home-manager-guide
             ];
           };
       };
 
-      homeConfigurations.kodicw = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          inherit polarbear;
-          userModule = import ./config/users/kodicw.nix;
-        };
-        modules = [
-          self.homeManagerModules.default
-          # (import /home/kodicw/code/nixspirit).homeManagerModules.default
-          # (import /home/kodicw/code/nixspirit).homeManagerModules.ai-company
-          # (import /home/kodicw/code/bifrost).homeManagerModules.default
-        ];
+      homeConfigurations = {
+        kodicw = mkHome "x86_64-linux" "kodicw";
+        charles = mkHome "x86_64-linux" "charles";
+        nixos = mkHome "x86_64-linux" "nixos";
+        kodiwalls = mkHome "x86_64-linux" "kodiwalls";
+        droid = mkHome "aarch64-linux" "droid";
       };
 
-      homeConfigurations.charles = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          inherit polarbear;
-          userModule = import ./config/users/charles.nix;
-        };
-        modules = [
-          self.homeManagerModules.default
-        ];
-      };
-
-      homeConfigurations.droid = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        extraSpecialArgs = {
-          inherit polarbear;
-          userModule = import ./config/users/droid.nix;
-        };
-        modules = [
-          self.homeManagerModules.default
-        ];
-      };
-
-      homeConfigurations.nixos = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          inherit polarbear;
-          userModule = import ./config/users/nixos.nix;
-        };
-        modules = [
-          self.homeManagerModules.default
-        ];
-      };
-
-      homeConfigurations.kodiwalls = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {
-          inherit polarbear;
-          userModule = import ./config/users/kodiwalls.nix;
-        };
-        modules = [
-          self.homeManagerModules.default
-        ];
-      };
+      checks = forAllSystems (
+        system:
+        lib.mapAttrs' (
+          name: value:
+          lib.nameValuePair name value.activationPackage
+        ) (lib.filterAttrs (_: value: value.pkgs.system == system) self.homeConfigurations)
+      );
     };
 }
