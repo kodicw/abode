@@ -23,6 +23,8 @@ in
       dust
       glow
       gcc
+      gnumake
+      python3
       nodejs_latest
       openssh
       fastfetch

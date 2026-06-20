@@ -47,6 +47,7 @@
 
       homeManagerModules = {
         activation-crostini-icons = ./activation/crostini-icons.nix;
+        activation-rebuild-native-modules = ./activation/rebuild-native-modules.nix;
         config-home = ./config/home.nix;
         packages = ./packages.nix;
         programs-csharp = ./programs/csharp.nix;
@@ -72,6 +73,7 @@
           {
             imports = [
               self.homeManagerModules.activation-crostini-icons
+              self.homeManagerModules.activation-rebuild-native-modules
               self.homeManagerModules.config-home
               self.homeManagerModules.packages
               self.homeManagerModules.programs-devtools
