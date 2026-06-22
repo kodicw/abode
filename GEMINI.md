@@ -5,8 +5,8 @@
 ## Main Technologies & Architecture
 - **Nix Flakes**: Used for dependency management and reproducible builds.
 - **Home Manager**: Manages the user environment and dotfiles.
-- **Xonsh**: The primary interactive shell, integrated with `starship` and `carapace`.
-- **Nushell**: Also installed and available as an alternative shell.
+- **Bash**: The primary interactive shell.
+- **Nushell & Xonsh**: Also installed and available as alternative shells.
 - **Zellij**: Terminal multiplexer configuration.
 - **Foot & Ghostty**: Terminal emulators.
 - **rclone**: Configured as a systemd user service to mount Google Drive.
@@ -41,5 +41,5 @@ nix flake update
 Packages should be added to the `home.packages` list in `home.nix`. If a package requires complex configuration, consider using a dedicated `programs.<name>` module if available in Home Manager.
 
 ### Shell Integration
-- **Xonsh** is the preferred shell and is configured to start automatically from `bash` if available.
+- **Bash** is the default shell. Nushell and Xonsh are configured and available if needed.
 - Custom aliases and functions should be defined within the `programs.xonsh`, `programs.nushell` or `programs.bash` sections in `home.nix`.

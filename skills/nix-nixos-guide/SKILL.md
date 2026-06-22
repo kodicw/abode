@@ -122,7 +122,7 @@ lib.optionals condition [ pkg1 pkg2 ]
 
 - Activation script handles `.desktop` files — checks for `nixGLIntel` references to avoid duplicates
 - Wayland env vars set in `session.nix` on x86_64 only
-- Primary shell is **xonsh**; bash auto-execs into it
+- Primary shell is **bash**; Nushell and Xonsh are available as alternatives.
 - Use `nixGLIntel` (via polarbear) for GPU-accelerated apps
 
 ## Debugging Builds

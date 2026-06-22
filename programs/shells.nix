@@ -84,11 +84,7 @@
       cat = "bat -p";
       cd = "z";
     };
-    initExtra = ''
-      if [[ $- == *i* ]] && [[ $(ps -p $PPID -o comm=) != "xonsh" ]] && command -v xonsh >/dev/null; then
-        exec xonsh
-      fi
-    '';
+    initExtra = '''';
   };
 
   programs.starship = {

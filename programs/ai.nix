@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 {
+  programs.antigravity = {
+    enable = true;
+  };
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;

@@ -24,8 +24,8 @@ home.nix                    # Main entry point
 
 ## Features
 - **Nix Flakes**: For dependency management and reproducible builds.
-- **Xonsh**: Primary interactive shell with Starship prompt and Carapace completion.
-- **Nushell**: Alternative shell available for use.
+- **Bash**: Primary interactive shell with Starship prompt and Carapace completion.
+- **Nushell & Xonsh**: Alternative shells available for use.
 - **Zellij**: Terminal multiplexer for workspace management.
 - **Wayland Optimized**: Configuration for Ghostty terminal with Wayland-specific session variables.
 - **Cloud Integration**: Automatic Google Drive mounting via `rclone` systemd service.

@@ -36,6 +36,7 @@ in
       gemini-cli
       nb
       llm-agents.packages.${system}.pi
+      llm-agents.packages.${system}.antigravity-cli
       xonsh
       polarbear.packages.${system}.nixvim
       polarbear.packages.${system}.tools-ssh

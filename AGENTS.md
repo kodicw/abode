@@ -32,7 +32,7 @@ Explicit-import-only (not in default): `programs/csharp.nix`, `systemd/opencode-
 
 ## Quirks
 
-- **Primary shell is xonsh.** Bash `initExtra` auto-execs xonsh. Edit xonsh config in `programs/shells.nix`.
+- **Primary shell is Bash.** Nushell and Xonsh are also installed and available. Edit configs in `programs/shells.nix`.
 - **Wayland session vars** in `session.nix` are set on x86_64 only (not aarch64/droid).
 - **Crostini activation** skips `.desktop` files that already exist and don't reference `nixGLIntel` — prevents duplicate launcher entries.
 - **`.gitignore`** only ignores `result`. No CI, no tests, no linters.

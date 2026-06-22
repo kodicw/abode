@@ -14,7 +14,7 @@ Xonsh is a shell that combines Python's expressive power with shell syntax. Writ
 - Cross-platform (Linux, macOS, Windows)
 - Extensible: write functions, import modules, use pip packages
 
-This project uses xonsh as the **primary interactive shell** — bash auto-execs into it.
+This project includes xonsh as an **alternative interactive shell**.
 
 ## Configuration
 
@@ -32,20 +32,6 @@ execx($(zoxide init xonsh))
 execx($(carapace _carapace xonsh))
 execx($(atuin init xonsh))
 ```
-
-## Bash Auto-Exec Setup
-
-Bash `~/.bashrc` contains:
-```bash
-if [[ $- == *i* ]] && [[ $(ps -p $PPID -o comm=) != "xonsh" ]] && command -v xonsh >/dev/null; then
-  exec xonsh
-fi
-```
-
-This means:
-- Interactive bash sessions (`$- == *i*`) check if parent is already xonsh
-- If not, replace bash process with xonsh (`exec`)
-- Prevents nested xonsh shells
 
 ## Syntax Quick Reference
 
@@ -194,7 +180,6 @@ $ python -c "import xonsh; print(xonsh.__version__)"
 - Xonsh is managed via `home.file.".xonshrc"` in `programs/shells.nix`
 - There is no `programs.xonsh` in Home Manager — use raw `home.file`
 - The xonsh package is explicitly added to `home.packages` in `programs/shells.nix`
-- Bash auto-exec lives in `programs.bash.initExtra`
 
 ## External References
 

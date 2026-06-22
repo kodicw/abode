@@ -4,6 +4,8 @@ let
   isAarch64 = pkgs.system == "aarch64-linux";
 in
 {
+  home.sessionPath = [ "$HOME/.local/bin" ];
+
   home.sessionVariables = {
     EDITOR = "nvim";
     TERMINFO_DIRS = "/usr/share/terminfo:/lib/terminfo:${userModule.homeDirectory}/.nix-profile/share/terminfo";
