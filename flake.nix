@@ -28,18 +28,37 @@
 
       mkHome =
         system: username:
+        let
+          userModule = import ./config/users/${username}.nix;
+          isMinimal = userModule.minimal or false;
+        in
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
           };
           extraSpecialArgs = {
-            inherit polarbear llm-agents;
-            userModule = import ./config/users/${username}.nix;
+            inherit polarbear llm-agents userModule;
           };
-          modules = [
-            self.homeManagerModules.default
-          ];
+          modules =
+            if isMinimal then
+              [
+                self.homeManagerModules.config-home
+                (
+                  { pkgs, ... }:
+                  {
+                    home.packages = [
+                      pkgs.python3
+                      llm-agents.packages.${system}.antigravity-cli
+                    ];
+                    programs.antigravity.enable = true;
+                  }
+                )
+              ]
+            else
+              [
+                self.homeManagerModules.default
+              ];
         };
     in
     {
@@ -97,6 +116,7 @@
         nixos = mkHome "x86_64-linux" "nixos";
         kodiwalls = mkHome "x86_64-linux" "kodiwalls";
         droid = mkHome "aarch64-linux" "droid";
+        charlyndav = mkHome "x86_64-linux" "charlyndav";
       };
 
       checks = forAllSystems (
