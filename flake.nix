@@ -116,7 +116,7 @@
         nixos = mkHome "x86_64-linux" "nixos";
         kodiwalls = mkHome "x86_64-linux" "kodiwalls";
         droid = mkHome "aarch64-linux" "droid";
-        charlyndav = mkHome "x86_64-linux" "charlyndav";
+        charlyndavi = mkHome "x86_64-linux" "charlyndavi";
       };
 
       checks = forAllSystems (
