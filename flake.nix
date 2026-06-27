@@ -44,6 +44,7 @@
             if isMinimal then
               [
                 self.homeManagerModules.config-home
+                self.homeManagerModules.activation-crostini-icons
                 (
                   { pkgs, ... }:
                   {
