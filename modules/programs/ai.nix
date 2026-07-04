@@ -77,20 +77,20 @@
     enable = true;
     servers = {
       nixos = {
-        package = pkgs.mcp-nixos;
+        command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
       };
       context7 = {
-        package = pkgs.context7-mcp;
+        command = "${pkgs.context7-mcp}/bin/context7-mcp";
       };
       filesystem = {
-        package = pkgs.mcp-server-filesystem;
+        command = "${pkgs.mcp-server-filesystem}/bin/mcp-server-filesystem";
         args = [ "/home/charles/code" ];
       };
       git = {
-        package = pkgs.mcp-server-git;
+        command = "${pkgs.mcp-server-git}/bin/mcp-server-git";
       };
       sqlite = {
-        package = pkgs.mcp-server-memory;
+        command = "${pkgs.mcp-server-memory}/bin/mcp-server-memory";
       };
     };
   };
