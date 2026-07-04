@@ -89,30 +89,50 @@
         kodicw = mylib.mkHome {
           system = "x86_64-linux";
           username = "kodicw";
-          modules = [ self.homeManagerModules.activation-crostini-icons ];
+          modules = [
+            self.homeManagerModules.default
+            self.homeManagerModules.activation-crostini-icons
+          ];
         };
         charles = mylib.mkHome {
           system = "x86_64-linux";
           username = "charles";
+          modules = [
+            self.homeManagerModules.default
+            self.homeManagerModules.activation-crostini-icons
+          ];
         };
         nixos = mylib.mkHome {
           system = "x86_64-linux";
           username = "nixos";
+          modules = [
+            self.homeManagerModules.default
+          ];
         };
         kodiwalls = mylib.mkHome {
           system = "x86_64-linux";
           username = "kodiwalls";
-          modules = [ self.homeManagerModules.activation-crostini-icons ];
+          modules = [
+            self.homeManagerModules.default
+            self.homeManagerModules.activation-crostini-icons
+          ];
         };
         droid = mylib.mkHome {
           system = "aarch64-linux";
           username = "droid";
-          modules = [ self.homeManagerModules.activation-crostini-icons ];
+          modules = [
+            self.homeManagerModules.default
+            self.homeManagerModules.activation-crostini-icons
+          ];
         };
         charlyndavi = mylib.mkHome {
           system = "x86_64-linux";
           username = "charlyndavi";
-          modules = [ self.homeManagerModules.activation-crostini-icons ];
+          modules = [
+            self.homeManagerModules.config-home
+            self.homeManagerModules.activation-crostini-icons
+            self.homeManagerModules.programs-ai
+          ];
         };
       };
 

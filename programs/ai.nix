@@ -7,6 +7,7 @@
 
 {
   home.packages = [
+    pkgs.python3
     llm-agents.packages.${system}.antigravity-cli
     llm-agents.packages.${system}.herdr
   ];
