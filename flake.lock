@@ -235,6 +235,19 @@
     },
     "nixpkgs_3": {
       "locked": {
+        "lastModified": 1782959384,
+        "narHash": "sha256-l57y2CK9dTSChgb6Edg7kkXu5DA4rucVbNFoQHUBjmw=",
+        "rev": "65179426c83bb3f6bc14898b42ea1c6f01d374b0",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1026231.65179426c83b/nixexprs.tar.xz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
         "lastModified": 1775710090,
         "narHash": "sha256-ar3rofg+awPB8QXDaFJhJ2jJhu+KqN/PRCXeyuXR76E=",
         "owner": "nixos",
@@ -272,10 +285,44 @@
         "type": "github"
       }
     },
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1783147882,
+        "narHash": "sha256-O4zq1bnVN2D7NipynZ5oZMeOabQnB2ccJZ48W+XgI3s=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "rev": "e1e904c556efbc020d002af5f8a6b7620383f7ef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "type": "github"
+      }
+    },
+    "noctalia-plugins": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782307199,
+        "narHash": "sha256-Ev1ohS/QR1wSvhkeflMOJIIC2XazySbPqyctW2Yte+I=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-plugins",
+        "rev": "5d26852854540f417160581bc4c2329a0f1f53e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-plugins",
+        "type": "github"
+      }
+    },
     "polarbear": {
       "inputs": {
         "nixdoc": "nixdoc",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "nixvim": "nixvim"
       },
       "locked": {
@@ -297,6 +344,8 @@
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs_2",
+        "noctalia": "noctalia",
+        "noctalia-plugins": "noctalia-plugins",
         "polarbear": "polarbear"
       }
     },

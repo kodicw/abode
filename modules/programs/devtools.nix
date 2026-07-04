@@ -13,19 +13,7 @@
 
   programs.gh.enable = true;
 
-  programs.opencode = {
-    enable = true;
-    enableMcpIntegration = true;
-  };
 
-  programs.mcp = {
-    enable = true;
-    servers = {
-      nixos = {
-        command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
-      };
-    };
-  };
 
   programs.fastfetch = {
     enable = true;

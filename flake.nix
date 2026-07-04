@@ -1,6 +1,11 @@
 {
   description = "abode - Home Manager configuration";
 
+  nixConfig = {
+    extra-substituters = [ "https://noctalia.cachix.org" ];
+    extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
@@ -9,6 +14,13 @@
     };
     polarbear.url = "github:kodicw/polarbear";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+    };
+    noctalia-plugins = {
+      url = "github:noctalia-dev/noctalia-plugins";
+      flake = false;
+    };
   };
 
   outputs =
@@ -41,34 +53,38 @@
       lib = mylib;
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      packages = forAllSystems (system: {
-        niri-desktop = nixpkgs.legacyPackages.${system}.callPackage ./packages/niri-desktop.nix { };
-        noctalia-shell = nixpkgs.legacyPackages.${system}.callPackage ./packages/noctalia-shell.nix { };
-      });
+      packages = forAllSystems (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        import ./pkgs { inherit pkgs inputs; });
 
       homeManagerModules = {
-        activation-crostini-icons = ./activation/crostini-icons.nix;
-        config-home = ./config/home.nix;
-        packages = ./packages.nix;
-        programs-csharp = ./programs/csharp.nix;
-        programs-devtools = ./programs/devtools.nix;
-        programs-shells = ./programs/shells.nix;
-        programs-terminals = ./programs/terminals.nix;
-        programs-ai = ./programs/ai.nix;
-        session = ./session.nix;
-        systemd-opencode-server = ./systemd/opencode-server.nix;
+        activation-crostini-icons = ./modules/activation/crostini-icons.nix;
+        config-home = ./modules/core/home.nix;
+        packages = ./modules/core/packages.nix;
+        programs-csharp = ./modules/programs/csharp.nix;
+        programs-devtools = ./modules/programs/devtools.nix;
+        programs-shells = ./modules/programs/shells.nix;
+        programs-terminals = ./modules/programs/terminals.nix;
+        programs-ai = ./modules/programs/ai.nix;
+        session = ./modules/core/session.nix;
+        systemd-opencode-server = ./modules/services/opencode-server.nix;
 
-        desktop-niri = ./desktop/niri.nix;
-        desktop-shell = ./desktop/shell.nix;
+        desktop-niri = ./modules/desktop/niri.nix;
+        desktop-shell = ./modules/desktop/shell.nix;
 
-        skills-nix-nixos-guide = ./skills/nix-nixos-guide;
-        skills-justfile-guide = ./skills/justfile-guide;
-        skills-xonsh-guide = ./skills/xonsh-guide;
-        skills-pi-coding-agent = ./skills/pi-coding-agent;
-        skills-gh-cli = ./skills/gh-cli;
-        skills-contributing-guide = ./skills/contributing-guide;
-        skills-opentofu-guide = ./skills/opentofu-guide;
-        skills-home-manager-guide = ./skills/home-manager-guide;
+        skills-nix-nixos-guide = ./modules/skills/nix-nixos-guide;
+        skills-justfile-guide = ./modules/skills/justfile-guide;
+        skills-xonsh-guide = ./modules/skills/xonsh-guide;
+        skills-pi-coding-agent = ./modules/skills/pi-coding-agent;
+        skills-gh-cli = ./modules/skills/gh-cli;
+        skills-contributing-guide = ./modules/skills/contributing-guide;
+        skills-opentofu-guide = ./modules/skills/opentofu-guide;
+        skills-home-manager-guide = ./modules/skills/home-manager-guide;
 
         # Combined default module for convenience
         default =

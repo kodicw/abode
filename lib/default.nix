@@ -16,7 +16,7 @@
       modules ? [ ],
     }:
     let
-      userModule = import "${self}/config/users/${username}.nix";
+      userModule = import "${self}/profiles/${username}.nix";
     in
     home-manager.lib.homeManagerConfiguration {
       pkgs = import nixpkgs {
