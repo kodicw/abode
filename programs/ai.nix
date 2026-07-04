@@ -1,6 +1,16 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  llm-agents,
+  system,
+  ...
+}:
 
 {
+  home.packages = [
+    llm-agents.packages.${system}.antigravity-cli
+    llm-agents.packages.${system}.herdr
+  ];
+
   programs.antigravity = {
     enable = true;
   };

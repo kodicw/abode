@@ -26,43 +26,18 @@
 
       forAllSystems = lib.genAttrs systems;
 
-      mkHome =
-        system: username:
-        let
-          userModule = import ./config/users/${username}.nix;
-          isMinimal = userModule.minimal or false;
-        in
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          extraSpecialArgs = {
-            inherit polarbear llm-agents userModule;
-          };
-          modules =
-            if isMinimal then
-              [
-                self.homeManagerModules.config-home
-                self.homeManagerModules.activation-crostini-icons
-                (
-                  { pkgs, ... }:
-                  {
-                    home.packages = [
-                      pkgs.python3
-                      llm-agents.packages.${system}.antigravity-cli
-                    ];
-                    programs.antigravity.enable = true;
-                  }
-                )
-              ]
-            else
-              [
-                self.homeManagerModules.default
-              ];
-        };
+      mylib = import ./lib {
+        inherit
+          self
+          nixpkgs
+          home-manager
+          polarbear
+          llm-agents
+          ;
+      };
     in
     {
+      lib = mylib;
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       homeManagerModules = {
@@ -91,7 +66,6 @@
           { ... }:
           {
             imports = [
-              self.homeManagerModules.activation-crostini-icons
               self.homeManagerModules.config-home
               self.homeManagerModules.packages
               self.homeManagerModules.programs-devtools
@@ -112,12 +86,34 @@
       };
 
       homeConfigurations = {
-        kodicw = mkHome "x86_64-linux" "kodicw";
-        charles = mkHome "x86_64-linux" "charles";
-        nixos = mkHome "x86_64-linux" "nixos";
-        kodiwalls = mkHome "x86_64-linux" "kodiwalls";
-        droid = mkHome "aarch64-linux" "droid";
-        charlyndavi = mkHome "x86_64-linux" "charlyndavi";
+        kodicw = mylib.mkHome {
+          system = "x86_64-linux";
+          username = "kodicw";
+          modules = [ self.homeManagerModules.activation-crostini-icons ];
+        };
+        charles = mylib.mkHome {
+          system = "x86_64-linux";
+          username = "charles";
+        };
+        nixos = mylib.mkHome {
+          system = "x86_64-linux";
+          username = "nixos";
+        };
+        kodiwalls = mylib.mkHome {
+          system = "x86_64-linux";
+          username = "kodiwalls";
+          modules = [ self.homeManagerModules.activation-crostini-icons ];
+        };
+        droid = mylib.mkHome {
+          system = "aarch64-linux";
+          username = "droid";
+          modules = [ self.homeManagerModules.activation-crostini-icons ];
+        };
+        charlyndavi = mylib.mkHome {
+          system = "x86_64-linux";
+          username = "charlyndavi";
+          modules = [ self.homeManagerModules.activation-crostini-icons ];
+        };
       };
 
       checks = forAllSystems (

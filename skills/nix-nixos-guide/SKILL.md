@@ -72,7 +72,11 @@ Create `config/users/<name>.nix` with:
 ```
 Then add to `flake.nix`:
 ```nix
-homeConfigurations.nameofuser = mkHome "x86_64-linux" "nameofuser";
+homeConfigurations.nameofuser = mylib.mkHome {
+  system = "x86_64-linux";
+  username = "nameofuser";
+  modules = [ self.homeManagerModules.activation-crostini-icons ]; # if Crostini
+};
 ```
 
 ### Adding packages

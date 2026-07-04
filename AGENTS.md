@@ -19,7 +19,6 @@ User configs are `config/users/<name>.nix` — simple 3-field attrsets (`usernam
 
 | Module | File |
 |--------|------|
-| activation-crostini-icons | `activation/crostini-icons.nix` |
 | config-home | `config/home.nix` |
 | packages | `packages.nix` |
 | programs-devtools | `programs/devtools.nix` |
@@ -28,7 +27,7 @@ User configs are `config/users/<name>.nix` — simple 3-field attrsets (`usernam
 | programs-ai | `programs/ai.nix` |
 | session | `session.nix` |
 
-Explicit-import-only (not in default): `programs/csharp.nix`, `systemd/opencode-server.nix`, `systemd/rclone-gdrive.nix`.
+Explicit-import-only (not in default): `activation-crostini-icons` (`activation/crostini-icons.nix`), `programs/csharp.nix`, `systemd/opencode-server.nix`, `systemd/rclone-gdrive.nix`.
 
 ## Quirks
 
