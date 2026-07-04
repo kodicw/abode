@@ -38,3 +38,5 @@ Explicit-import-only (not in default): `activation-crostini-icons` (`activation/
 - **External flake**: `github:kodicw/polarbear` provides `nixvim` and `tools-ssh` packages.
 - **`config/home.nix`** expects a `userModule` arg passed via `extraSpecialArgs` in `flake.nix`.
 - **Recent commits** by "JBot (dev)" — an AI agent, not the human.
+- **Herdr execution constraint**: When running inside the herdr multiplexer (e.g. when `HERDR_ENV=1` is set or herdr CLI is available), always execute terminal commands in a separate herdr pane (e.g. via `herdr pane run <pane> "<command>"`) instead of executing commands directly in the background or blocking the active agent's pane.
+

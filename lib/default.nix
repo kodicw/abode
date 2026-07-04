@@ -4,6 +4,7 @@
   home-manager,
   polarbear,
   llm-agents,
+  inputs,
   ...
 }:
 
@@ -23,7 +24,7 @@
         config.allowUnfree = true;
       };
       extraSpecialArgs = {
-        inherit system polarbear llm-agents userModule;
+        inherit system polarbear llm-agents userModule inputs;
       };
       inherit modules;
     };

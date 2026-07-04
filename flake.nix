@@ -12,7 +12,7 @@
   };
 
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
       home-manager,
@@ -33,12 +33,18 @@
           home-manager
           polarbear
           llm-agents
+          inputs
           ;
       };
     in
     {
       lib = mylib;
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
+      packages = forAllSystems (system: {
+        niri-desktop = nixpkgs.legacyPackages.${system}.callPackage ./packages/niri-desktop.nix { };
+        noctalia-shell = nixpkgs.legacyPackages.${system}.callPackage ./packages/noctalia-shell.nix { };
+      });
 
       homeManagerModules = {
         activation-crostini-icons = ./activation/crostini-icons.nix;
@@ -51,6 +57,9 @@
         programs-ai = ./programs/ai.nix;
         session = ./session.nix;
         systemd-opencode-server = ./systemd/opencode-server.nix;
+
+        desktop-niri = ./desktop/niri.nix;
+        desktop-shell = ./desktop/shell.nix;
 
         skills-nix-nixos-guide = ./skills/nix-nixos-guide;
         skills-justfile-guide = ./skills/justfile-guide;
@@ -73,6 +82,8 @@
               self.homeManagerModules.programs-terminals
               self.homeManagerModules.programs-ai
               self.homeManagerModules.session
+              self.homeManagerModules.desktop-niri
+              self.homeManagerModules.desktop-shell
               self.homeManagerModules.skills-nix-nixos-guide
               self.homeManagerModules.skills-justfile-guide
               self.homeManagerModules.skills-xonsh-guide
