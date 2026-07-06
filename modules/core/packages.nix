@@ -6,7 +6,7 @@
 }:
 
 let
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
   isAarch64 = system == "aarch64-linux";
 in
 {
@@ -33,6 +33,7 @@ in
       claude-code
       ollama
       opencode
+      ouch
       gemini-cli
       nb
       llm-agents.packages.${system}.pi

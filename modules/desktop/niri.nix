@@ -1,15 +1,21 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
   # Google Chrome is only supported on x86_64-linux
   chrome = if system == "x86_64-linux" then pkgs.google-chrome else null;
 in
 {
   home.packages = [
     inputs.self.packages.${system}.niri-desktop
-  ] ++ pkgs.lib.optionals (system == "x86_64-linux") [
-    (pkgs.runCommand "google-chrome-icons" {} ''
+  ]
+  ++ pkgs.lib.optionals (system == "x86_64-linux") [
+    (pkgs.runCommand "google-chrome-icons" { } ''
       mkdir -p $out/share
       cp -r ${chrome}/share/icons $out/share/
     '')
@@ -82,7 +88,10 @@ in
       genericName = "Web Browser";
       exec = "google-chrome-stable %U";
       terminal = false;
-      categories = [ "Network" "WebBrowser" ];
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
       mimeType = [
         "text/html"
         "text/xml"

@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 let
-  isAarch64 = pkgs.system == "aarch64-linux";
+  isAarch64 = pkgs.stdenv.hostPlatform.system == "aarch64-linux";
 in
 {
   programs.ghostty = {

@@ -1,7 +1,12 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
   noctalia-pkg = inputs.noctalia.packages.${system}.default;
 in
 {

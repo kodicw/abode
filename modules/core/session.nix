@@ -1,7 +1,7 @@
 { pkgs, userModule, ... }:
 
 let
-  isAarch64 = pkgs.system == "aarch64-linux";
+  isAarch64 = pkgs.stdenv.hostPlatform.system == "aarch64-linux";
 in
 {
   home.sessionPath = [ "$HOME/.local/bin" ];

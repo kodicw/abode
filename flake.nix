@@ -3,7 +3,9 @@
 
   nixConfig = {
     extra-substituters = [ "https://noctalia.cachix.org" ];
-    extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+    extra-trusted-public-keys = [
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+    ];
   };
 
   inputs = {
@@ -19,6 +21,44 @@
     };
     noctalia-plugins = {
       url = "github:noctalia-dev/noctalia-plugins";
+      flake = false;
+    };
+    # ── Skill sources ──
+    agent-skills-nix.url = "github:Kyure-A/agent-skills-nix";
+    vercel-skills = {
+      url = "github:vercel-labs/skills";
+      flake = false;
+    };
+    addyosmani-skills = {
+      url = "github:addyosmani/agent-skills";
+      flake = false;
+    };
+    ailabs-skills = {
+      url = "github:ailabs-393/ai-labs-claude-skills";
+      flake = false;
+    };
+    bigboss-skills = {
+      url = "github:0xbigboss/claude-code";
+      flake = false;
+    };
+    affaan-skills = {
+      url = "github:affaan-m/everything-claude-code";
+      flake = false;
+    };
+    mindrally-skills = {
+      url = "github:mindrally/skills";
+      flake = false;
+    };
+    unclecatvn-skills = {
+      url = "github:unclecatvn/agent-skills";
+      flake = false;
+    };
+    xixu-skills = {
+      url = "github:xixu-me/skills";
+      flake = false;
+    };
+    google-skills = {
+      url = "github:google/skills";
       flake = false;
     };
   };
@@ -53,19 +93,22 @@
       lib = mylib;
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      packages = forAllSystems (system:
+      packages = forAllSystems (
+        system:
         let
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
           };
         in
-        import ./pkgs { inherit pkgs inputs; });
+        import ./pkgs { inherit pkgs inputs; }
+      );
 
       homeManagerModules = {
         activation-crostini-icons = ./modules/activation/crostini-icons.nix;
         config-home = ./modules/core/home.nix;
         packages = ./modules/core/packages.nix;
+        skills-agent-skills = ./modules/core/agent-skills.nix;
         programs-csharp = ./modules/programs/csharp.nix;
         programs-devtools = ./modules/programs/devtools.nix;
         programs-shells = ./modules/programs/shells.nix;
@@ -73,10 +116,19 @@
         programs-ai = ./modules/programs/ai.nix;
         session = ./modules/core/session.nix;
         systemd-opencode-server = ./modules/services/opencode-server.nix;
+        systemd-rclone-gdrive = ./modules/services/rclone-gdrive.nix;
+        systemd-maintenance = ./modules/services/maintenance.nix;
 
         desktop-niri = ./modules/desktop/niri.nix;
         desktop-shell = ./modules/desktop/shell.nix;
-
+        desktop =
+          { ... }:
+          {
+            imports = [
+              self.homeManagerModules.desktop-niri
+              self.homeManagerModules.desktop-shell
+            ];
+          };
         skills-nix-nixos-guide = ./modules/skills/nix-nixos-guide;
         skills-justfile-guide = ./modules/skills/justfile-guide;
         skills-xonsh-guide = ./modules/skills/xonsh-guide;
@@ -98,8 +150,7 @@
               self.homeManagerModules.programs-terminals
               self.homeManagerModules.programs-ai
               self.homeManagerModules.session
-              self.homeManagerModules.desktop-niri
-              self.homeManagerModules.desktop-shell
+              self.homeManagerModules.systemd-maintenance
               self.homeManagerModules.skills-nix-nixos-guide
               self.homeManagerModules.skills-justfile-guide
               self.homeManagerModules.skills-xonsh-guide
@@ -108,6 +159,7 @@
               self.homeManagerModules.skills-contributing-guide
               self.homeManagerModules.skills-opentofu-guide
               self.homeManagerModules.skills-home-manager-guide
+              self.homeManagerModules.skills-agent-skills
             ];
           };
       };
@@ -118,6 +170,7 @@
           username = "kodicw";
           modules = [
             self.homeManagerModules.default
+            self.homeManagerModules.desktop
             self.homeManagerModules.activation-crostini-icons
           ];
         };
@@ -126,6 +179,7 @@
           username = "charles";
           modules = [
             self.homeManagerModules.default
+            self.homeManagerModules.desktop
             self.homeManagerModules.activation-crostini-icons
           ];
         };
@@ -141,6 +195,7 @@
           username = "kodiwalls";
           modules = [
             self.homeManagerModules.default
+            self.homeManagerModules.desktop
             self.homeManagerModules.activation-crostini-icons
           ];
         };
@@ -149,6 +204,7 @@
           username = "droid";
           modules = [
             self.homeManagerModules.default
+            self.homeManagerModules.desktop
             self.homeManagerModules.activation-crostini-icons
           ];
         };
@@ -165,10 +221,9 @@
 
       checks = forAllSystems (
         system:
-        lib.mapAttrs' (
-          name: value:
-          lib.nameValuePair name value.activationPackage
-        ) (lib.filterAttrs (_: value: value.pkgs.system == system) self.homeConfigurations)
+        lib.mapAttrs' (name: value: lib.nameValuePair name value.activationPackage) (
+          lib.filterAttrs (_: value: value.pkgs.stdenv.hostPlatform.system == system) self.homeConfigurations
+        )
       );
     };
 }
