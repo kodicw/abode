@@ -82,7 +82,7 @@
         postgres = {
           type = "local";
           command = [ "${pkgs.uv}/bin/uvx" "postgres-mcp" ];
-          enabled = true;
+          enabled = false;
         };
         docker = {
           type = "local";
@@ -145,10 +145,10 @@
         command = "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking";
       };
       # --- Tier 1 MCP additions (fallbacks for non-nixpkgs) ---
-      postgres = {
-        command = "${pkgs.uv}/bin/uvx";
-        args = [ "postgres-mcp" ];
-      };
+      # postgres = {
+      #   command = "${pkgs.uv}/bin/uvx";
+      #   args = [ "postgres-mcp" ];
+      # };
       docker = {
         command = "${pkgs.uv}/bin/uvx";
         args = [ "mcp-server-docker" ];
