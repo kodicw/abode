@@ -66,7 +66,7 @@
         github = {
           type = "local";
           command = [ "${pkgs.github-mcp-server}/bin/github-mcp-server" "stdio" ];
-          enabled = true;
+          enabled = false;
         };
         terraform = {
           type = "local";
@@ -134,10 +134,10 @@
       playwright = {
         command = "${pkgs.playwright-mcp}/bin/playwright-mcp";
       };
-      github = {
-        command = "${pkgs.github-mcp-server}/bin/github-mcp-server";
-        args = [ "stdio" ];
-      };
+      # github = {
+      #   command = "${pkgs.github-mcp-server}/bin/github-mcp-server";
+      #   args = [ "stdio" ];
+      # };
       terraform = {
         command = "${pkgs.terraform-mcp-server}/bin/terraform-mcp-server";
       };
