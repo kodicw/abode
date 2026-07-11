@@ -57,6 +57,10 @@
       url = "github:xixu-me/skills";
       flake = false;
     };
+    openspec-skills = {
+      url = "github:full-stack-skills/openspec-skills";
+      flake = false;
+    };
     google-skills = {
       url = "github:google/skills";
       flake = false;

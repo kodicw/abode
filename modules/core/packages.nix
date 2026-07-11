@@ -28,14 +28,15 @@ in
       nodejs_latest
       openssh
       fastfetch
+      btop
       rclone
       mcp-nixos
-      claude-code
       ollama
       opencode
       ouch
-      gemini-cli
       nb
+      obsidian
+      openspec
       llm-agents.packages.${system}.pi
       llm-agents.packages.${system}.antigravity-cli
       xonsh

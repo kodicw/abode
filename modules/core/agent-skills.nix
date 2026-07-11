@@ -57,9 +57,13 @@
         input = "xixu-skills";
         subdir = "skills";
       };
+      openspec = {
+        input = "openspec-skills";
+        subdir = "skills";
+      };
     };
     skills = {
-      enableAll = [ "builtin-sources" "core-sources" "google-cloud" "google-ads" "google-analytics" ];
+      enableAll = [ "builtin-sources" "core-sources" "google-cloud" "google-ads" "google-analytics" "openspec" ];
       enable = [
         "find-skills"
         "git-workflow-and-versioning"

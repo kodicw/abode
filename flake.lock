@@ -471,6 +471,22 @@
         "type": "github"
       }
     },
+    "openspec-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782216854,
+        "narHash": "sha256-NS/jc6SHu+pqmHDCGPiVb8RDkCi/XeDTvUu5xcrtmy0=",
+        "owner": "full-stack-skills",
+        "repo": "openspec-skills",
+        "rev": "b48cd0ce72d68116cadc71d6cfc00c5a5238abd6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "full-stack-skills",
+        "repo": "openspec-skills",
+        "type": "github"
+      }
+    },
     "polarbear": {
       "inputs": {
         "nixdoc": "nixdoc",
@@ -505,6 +521,7 @@
         "nixpkgs": "nixpkgs_3",
         "noctalia": "noctalia",
         "noctalia-plugins": "noctalia-plugins",
+        "openspec-skills": "openspec-skills",
         "polarbear": "polarbear",
         "unclecatvn-skills": "unclecatvn-skills",
         "vercel-skills": "vercel-skills",
