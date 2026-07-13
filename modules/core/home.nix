@@ -1,4 +1,9 @@
-{ config, pkgs, userModule, ... }:
+{
+  config,
+  pkgs,
+  userModule,
+  ...
+}:
 
 {
   home.username = userModule.username;
@@ -8,4 +13,11 @@
   programs.home-manager.enable = true;
   targets.genericLinux.enable = true;
   nixpkgs.config.allowUnfree = true;
+
+  programs.gpg.enable = true;
+
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = pkgs.pinentry-curses;
+  };
 }

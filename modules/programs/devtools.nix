@@ -13,8 +13,6 @@
 
   programs.gh.enable = true;
 
-
-
   programs.fastfetch = {
     enable = true;
     settings = {
@@ -39,14 +37,5 @@
     settings = {
       PASSWORD_STORE_DIR = "$HOME/.password-store";
     };
-  };
-
-  programs.gpg = {
-    enable = true;
-  };
-
-  services.gpg-agent = {
-    enable = true;
-    pinentry.package = pkgs.pinentry-curses;
   };
 }
