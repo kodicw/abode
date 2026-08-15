@@ -169,5 +169,17 @@
     };
   };
   programs.codex.enable = true;
+  programs.pi-coding-agent = {
+    enable = true;
+    package = llm-agents.packages.${system}.pi;
+    settings = {
+      defaultProvider = "opencode-go";
+      defaultModel = "deepseek-v4-flash";
+      defaultThinkingLevel = "high";
+      packages = [
+        "git:github.com/kodicw/pi-voice"
+      ];
+    };
+  };
 }
 
