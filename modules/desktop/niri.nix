@@ -2,19 +2,21 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 
 let
   system = pkgs.stdenv.hostPlatform.system;
+  isDesktop = system == "x86_64-linux";
   # Google Chrome is only supported on x86_64-linux
-  chrome = if system == "x86_64-linux" then pkgs.google-chrome else null;
+  chrome = if isDesktop then pkgs.google-chrome else null;
 in
 {
   home.packages = [
     inputs.self.packages.${system}.niri-desktop
   ]
-  ++ pkgs.lib.optionals (system == "x86_64-linux") [
+  ++ pkgs.lib.optionals isDesktop [
     (pkgs.runCommand "google-chrome-icons" { } ''
       mkdir -p $out/share
       cp -r ${chrome}/share/icons $out/share/
@@ -62,22 +64,25 @@ in
         "Mod+Right" { focus-column-right; }
         "Mod+Up" { focus-window-up; }
         "Mod+Down" { focus-window-down; }
-
+        ${lib.optionalString isDesktop ''
         // Noctalia controls
         "Alt+Space" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
         "Mod+C" { spawn "noctalia-shell" "msg" "panel-toggle" "control-center"; }
         "Mod+V" { spawn "noctalia-shell" "msg" "panel-toggle" "clipboard"; }
         "Mod+Escape" { spawn "noctalia-shell" "msg" "panel-toggle" "session"; }
+        ''}
     }
 
+    ${lib.optionalString isDesktop ''
     // Allow Noctalia's backdrop/wallpaper layer to show in overview mode
     layer-rule {
         match namespace="^noctalia-backdrop$"
         place-within-backdrop true
     }
+    ''}
 
     spawn-at-startup "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE"
-    spawn-at-startup "noctalia-shell"
+    ${lib.optionalString isDesktop ''spawn-at-startup "noctalia-shell"''}
   '';
 
   xdg.enable = true;

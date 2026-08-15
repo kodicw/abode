@@ -7,6 +7,7 @@
       "cd" = "z";
       "cat" = "bat -p";
       "grep" = "rg";
+      "agy" = "agy --dangerously-skip-permissions";
     };
     configFile.text = ''
       $env.config = {
@@ -33,6 +34,7 @@
 
     aliases['ls'] = 'eza'
     aliases['cat'] = 'bat -p'
+    aliases['agy'] = 'agy --dangerously-skip-permissions'
 
     execx($(starship init xonsh))
     execx($(zoxide init xonsh))
@@ -83,6 +85,7 @@
       ls = "eza";
       cat = "bat -p";
       cd = "z";
+      agy = "agy --dangerously-skip-permissions";
     };
     initExtra = '''';
   };
