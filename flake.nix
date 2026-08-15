@@ -10,6 +10,15 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    systems.url = "github:nix-systems/default";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -71,163 +80,167 @@
     inputs@{
       self,
       nixpkgs,
+      flake-parts,
+      treefmt-nix,
       home-manager,
       polarbear,
       llm-agents,
       ...
     }:
-    let
-      inherit (nixpkgs) lib;
-      systems = lib.intersectLists lib.systems.flakeExposed (lib.attrNames nixpkgs.legacyPackages);
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        treefmt-nix.flakeModule
+      ];
 
-      forAllSystems = lib.genAttrs systems;
+      systems = import inputs.systems;
 
-      mylib = import ./lib {
-        inherit
-          self
-          nixpkgs
-          home-manager
-          polarbear
-          llm-agents
-          inputs
-          ;
-      };
-    in
-    {
-      lib = mylib;
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      perSystem =
+        { pkgs, system, ... }:
+        {
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs.nixfmt.enable = true;
+            programs.shfmt.enable = true;
+          };
 
-      packages = forAllSystems (
-        system:
+          packages = import ./pkgs {
+            pkgs = import nixpkgs {
+              inherit system;
+              config.allowUnfree = true;
+            };
+            inherit inputs;
+          };
+        };
+
+      flake =
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
+          mylib = import ./lib {
+            inherit
+              self
+              nixpkgs
+              home-manager
+              polarbear
+              llm-agents
+              inputs
+              ;
           };
         in
-        import ./pkgs { inherit pkgs inputs; }
-      );
+        {
+          lib = mylib;
 
-      homeManagerModules = {
-        activation-crostini-icons = ./modules/activation/crostini-icons.nix;
-        config-home = ./modules/core/home.nix;
-        packages = ./modules/core/packages.nix;
-        skills-agent-skills = ./modules/core/agent-skills.nix;
-        programs-csharp = ./modules/programs/csharp.nix;
-        programs-devtools = ./modules/programs/devtools.nix;
-        programs-shells = ./modules/programs/shells.nix;
-        programs-terminals = ./modules/programs/terminals.nix;
-        programs-ai = ./modules/programs/ai.nix;
-        session = ./modules/core/session.nix;
-        systemd-opencode-server = ./modules/services/opencode-server.nix;
-        systemd-rclone-gdrive = ./modules/services/rclone-gdrive.nix;
-        systemd-maintenance = ./modules/services/maintenance.nix;
+          homeManagerModules = {
+            activation-crostini-icons = ./modules/activation/crostini-icons.nix;
+            config-home = ./modules/core/home.nix;
+            packages = ./modules/core/packages.nix;
+            skills-agent-skills = ./modules/core/agent-skills.nix;
+            programs-csharp = ./modules/programs/csharp.nix;
+            programs-devtools = ./modules/programs/devtools.nix;
+            programs-shells = ./modules/programs/shells.nix;
+            programs-terminals = ./modules/programs/terminals.nix;
+            programs-ai = ./modules/programs/ai.nix;
+            session = ./modules/core/session.nix;
+            systemd-opencode-server = ./modules/services/opencode-server.nix;
+            systemd-rclone-gdrive = ./modules/services/rclone-gdrive.nix;
+            systemd-maintenance = ./modules/services/maintenance.nix;
 
-        desktop-niri = ./modules/desktop/niri.nix;
-        desktop-shell = ./modules/desktop/shell.nix;
-        desktop =
-          { ... }:
-          {
-            imports = [
-              self.homeManagerModules.desktop-niri
-              self.homeManagerModules.desktop-shell
-            ];
+            desktop-niri = ./modules/desktop/niri.nix;
+            desktop-shell = ./modules/desktop/shell.nix;
+            desktop =
+              { ... }:
+              {
+                imports = [
+                  self.homeManagerModules.desktop-niri
+                  self.homeManagerModules.desktop-shell
+                ];
+              };
+            skills-nix-nixos-guide = ./modules/skills/nix-nixos-guide;
+            skills-justfile-guide = ./modules/skills/justfile-guide;
+            skills-xonsh-guide = ./modules/skills/xonsh-guide;
+            skills-pi-coding-agent = ./modules/skills/pi-coding-agent;
+            skills-gh-cli = ./modules/skills/gh-cli;
+            skills-contributing-guide = ./modules/skills/contributing-guide;
+            skills-opentofu-guide = ./modules/skills/opentofu-guide;
+            skills-home-manager-guide = ./modules/skills/home-manager-guide;
+
+            default =
+              { ... }:
+              {
+                imports = [
+                  self.homeManagerModules.config-home
+                  self.homeManagerModules.packages
+                  self.homeManagerModules.programs-devtools
+                  self.homeManagerModules.programs-shells
+                  self.homeManagerModules.programs-terminals
+                  self.homeManagerModules.programs-ai
+                  self.homeManagerModules.session
+                  self.homeManagerModules.systemd-maintenance
+                  self.homeManagerModules.skills-nix-nixos-guide
+                  self.homeManagerModules.skills-justfile-guide
+                  self.homeManagerModules.skills-xonsh-guide
+                  self.homeManagerModules.skills-pi-coding-agent
+                  self.homeManagerModules.skills-gh-cli
+                  self.homeManagerModules.skills-contributing-guide
+                  self.homeManagerModules.skills-opentofu-guide
+                  self.homeManagerModules.skills-home-manager-guide
+                  self.homeManagerModules.skills-agent-skills
+                ];
+              };
           };
-        skills-nix-nixos-guide = ./modules/skills/nix-nixos-guide;
-        skills-justfile-guide = ./modules/skills/justfile-guide;
-        skills-xonsh-guide = ./modules/skills/xonsh-guide;
-        skills-pi-coding-agent = ./modules/skills/pi-coding-agent;
-        skills-gh-cli = ./modules/skills/gh-cli;
-        skills-contributing-guide = ./modules/skills/contributing-guide;
-        skills-opentofu-guide = ./modules/skills/opentofu-guide;
-        skills-home-manager-guide = ./modules/skills/home-manager-guide;
 
-        # Combined default module for convenience
-        default =
-          { ... }:
-          {
-            imports = [
-              self.homeManagerModules.config-home
-              self.homeManagerModules.packages
-              self.homeManagerModules.programs-devtools
-              self.homeManagerModules.programs-shells
-              self.homeManagerModules.programs-terminals
-              self.homeManagerModules.programs-ai
-              self.homeManagerModules.session
-              self.homeManagerModules.systemd-maintenance
-              self.homeManagerModules.skills-nix-nixos-guide
-              self.homeManagerModules.skills-justfile-guide
-              self.homeManagerModules.skills-xonsh-guide
-              self.homeManagerModules.skills-pi-coding-agent
-              self.homeManagerModules.skills-gh-cli
-              self.homeManagerModules.skills-contributing-guide
-              self.homeManagerModules.skills-opentofu-guide
-              self.homeManagerModules.skills-home-manager-guide
-              self.homeManagerModules.skills-agent-skills
-            ];
+          homeConfigurations = {
+            kodicw = mylib.mkHome {
+              system = "x86_64-linux";
+              username = "kodicw";
+              modules = [
+                self.homeManagerModules.default
+                self.homeManagerModules.desktop
+                self.homeManagerModules.activation-crostini-icons
+              ];
+            };
+            charles = mylib.mkHome {
+              system = "x86_64-linux";
+              username = "charles";
+              modules = [
+                self.homeManagerModules.default
+                self.homeManagerModules.desktop
+                self.homeManagerModules.activation-crostini-icons
+              ];
+            };
+            nixos = mylib.mkHome {
+              system = "x86_64-linux";
+              username = "nixos";
+              modules = [
+                self.homeManagerModules.default
+              ];
+            };
+            kodiwalls = mylib.mkHome {
+              system = "x86_64-linux";
+              username = "kodiwalls";
+              modules = [
+                self.homeManagerModules.default
+                self.homeManagerModules.desktop
+                self.homeManagerModules.activation-crostini-icons
+              ];
+            };
+            droid = mylib.mkHome {
+              system = "aarch64-linux";
+              username = "droid";
+              modules = [
+                self.homeManagerModules.default
+                self.homeManagerModules.desktop
+                self.homeManagerModules.activation-crostini-icons
+              ];
+            };
+            charlyndavi = mylib.mkHome {
+              system = "x86_64-linux";
+              username = "charlyndavi";
+              modules = [
+                self.homeManagerModules.config-home
+                self.homeManagerModules.activation-crostini-icons
+                self.homeManagerModules.programs-ai
+              ];
+            };
           };
-      };
-
-      homeConfigurations = {
-        kodicw = mylib.mkHome {
-          system = "x86_64-linux";
-          username = "kodicw";
-          modules = [
-            self.homeManagerModules.default
-            self.homeManagerModules.desktop
-            self.homeManagerModules.activation-crostini-icons
-          ];
         };
-        charles = mylib.mkHome {
-          system = "x86_64-linux";
-          username = "charles";
-          modules = [
-            self.homeManagerModules.default
-            self.homeManagerModules.desktop
-            self.homeManagerModules.activation-crostini-icons
-          ];
-        };
-        nixos = mylib.mkHome {
-          system = "x86_64-linux";
-          username = "nixos";
-          modules = [
-            self.homeManagerModules.default
-          ];
-        };
-        kodiwalls = mylib.mkHome {
-          system = "x86_64-linux";
-          username = "kodiwalls";
-          modules = [
-            self.homeManagerModules.default
-            self.homeManagerModules.desktop
-            self.homeManagerModules.activation-crostini-icons
-          ];
-        };
-        droid = mylib.mkHome {
-          system = "aarch64-linux";
-          username = "droid";
-          modules = [
-            self.homeManagerModules.default
-            self.homeManagerModules.desktop
-            self.homeManagerModules.activation-crostini-icons
-          ];
-        };
-        charlyndavi = mylib.mkHome {
-          system = "x86_64-linux";
-          username = "charlyndavi";
-          modules = [
-            self.homeManagerModules.config-home
-            self.homeManagerModules.activation-crostini-icons
-            self.homeManagerModules.programs-ai
-          ];
-        };
-      };
-
-      checks = forAllSystems (
-        system:
-        lib.mapAttrs' (name: value: lib.nameValuePair name value.activationPackage) (
-          lib.filterAttrs (_: value: value.pkgs.stdenv.hostPlatform.system == system) self.homeConfigurations
-        )
-      );
     };
 }

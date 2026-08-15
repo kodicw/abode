@@ -65,7 +65,10 @@
         };
         github = {
           type = "local";
-          command = [ "${pkgs.github-mcp-server}/bin/github-mcp-server" "stdio" ];
+          command = [
+            "${pkgs.github-mcp-server}/bin/github-mcp-server"
+            "stdio"
+          ];
           enabled = false;
         };
         terraform = {
@@ -81,17 +84,28 @@
         # --- Tier 1 MCP additions (fallbacks for non-nixpkgs) ---
         postgres = {
           type = "local";
-          command = [ "${pkgs.uv}/bin/uvx" "postgres-mcp" ];
+          command = [
+            "${pkgs.uv}/bin/uvx"
+            "postgres-mcp"
+          ];
           enabled = false;
         };
         docker = {
           type = "local";
-          command = [ "${pkgs.uv}/bin/uvx" "mcp-server-docker" ];
+          command = [
+            "${pkgs.uv}/bin/uvx"
+            "mcp-server-docker"
+          ];
           enabled = true;
         };
         ansible = {
           type = "local";
-          command = [ "${pkgs.nodejs}/bin/npx" "-y" "@ansible/ansible-mcp-server" "--stdio" ];
+          command = [
+            "${pkgs.nodejs}/bin/npx"
+            "-y"
+            "@ansible/ansible-mcp-server"
+            "--stdio"
+          ];
           enabled = true;
         };
       };
@@ -155,7 +169,11 @@
       };
       ansible = {
         command = "${pkgs.nodejs}/bin/npx";
-        args = [ "-y" "@ansible/ansible-mcp-server" "--stdio" ];
+        args = [
+          "-y"
+          "@ansible/ansible-mcp-server"
+          "--stdio"
+        ];
       };
     };
   };
@@ -182,4 +200,3 @@
     };
   };
 }
-

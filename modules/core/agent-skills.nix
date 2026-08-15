@@ -1,4 +1,9 @@
-{ config, lib, inputs, ... }:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [ inputs.agent-skills-nix.homeManagerModules.default ];
@@ -63,7 +68,14 @@
       };
     };
     skills = {
-      enableAll = [ "builtin-sources" "core-sources" "google-cloud" "google-ads" "google-analytics" "openspec" ];
+      enableAll = [
+        "builtin-sources"
+        "core-sources"
+        "google-cloud"
+        "google-ads"
+        "google-analytics"
+        "openspec"
+      ];
       enable = [
         "find-skills"
         "git-workflow-and-versioning"

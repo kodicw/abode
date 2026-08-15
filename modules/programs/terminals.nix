@@ -25,7 +25,9 @@ in
       default_layout = "compact";
       keybinds = {
         normal = {
-          "bind \"Alt t\"" = { NewTab = { }; };
+          "bind \"Alt t\"" = {
+            NewTab = { };
+          };
         };
       };
     };

@@ -87,7 +87,7 @@
       cd = "z";
       agy = "agy --dangerously-skip-permissions";
     };
-    initExtra = '''';
+    initExtra = "";
   };
 
   programs.starship = {

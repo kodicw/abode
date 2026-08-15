@@ -65,20 +65,20 @@ in
         "Mod+Up" { focus-window-up; }
         "Mod+Down" { focus-window-down; }
         ${lib.optionalString isDesktop ''
-        // Noctalia controls
-        "Alt+Space" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
-        "Mod+C" { spawn "noctalia-shell" "msg" "panel-toggle" "control-center"; }
-        "Mod+V" { spawn "noctalia-shell" "msg" "panel-toggle" "clipboard"; }
-        "Mod+Escape" { spawn "noctalia-shell" "msg" "panel-toggle" "session"; }
+          // Noctalia controls
+          "Alt+Space" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
+          "Mod+C" { spawn "noctalia-shell" "msg" "panel-toggle" "control-center"; }
+          "Mod+V" { spawn "noctalia-shell" "msg" "panel-toggle" "clipboard"; }
+          "Mod+Escape" { spawn "noctalia-shell" "msg" "panel-toggle" "session"; }
         ''}
     }
 
     ${lib.optionalString isDesktop ''
-    // Allow Noctalia's backdrop/wallpaper layer to show in overview mode
-    layer-rule {
-        match namespace="^noctalia-backdrop$"
-        place-within-backdrop true
-    }
+      // Allow Noctalia's backdrop/wallpaper layer to show in overview mode
+      layer-rule {
+          match namespace="^noctalia-backdrop$"
+          place-within-backdrop true
+      }
     ''}
 
     spawn-at-startup "systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE"

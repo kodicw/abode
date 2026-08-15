@@ -1,4 +1,8 @@
-{ username, homeDirectory, stateVersion ? "25.11" }:
+{
+  username,
+  homeDirectory,
+  stateVersion ? "25.11",
+}:
 
 {
   home.username = username;

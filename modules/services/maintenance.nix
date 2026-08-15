@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -36,9 +41,9 @@ in
         ExecStart = "${pkgs.writeShellScript "hm-maintenance-run" ''
           set -euo pipefail
           export PATH="${config.home.homeDirectory}/.nix-profile/bin:${pkgs.nix}/bin:/usr/bin:/bin"
-          
+
           echo "=== Starting Home Manager & Nix Maintenance ==="
-          
+
           # Delete old Home Manager generations
           if command -v home-manager >/dev/null 2>&1; then
             echo "Expiring Home Manager generations older than ${cfg.deleteOlderThan}..."
@@ -47,15 +52,15 @@ in
           else
             echo "home-manager command not found, skipping generation expiry."
           fi
-          
+
           # Run Nix store garbage collection
           echo "Running Nix store garbage collection..."
           nix-collect-garbage --delete-older-than ${cfg.deleteOlderThan}
-          
+
           # Optimize Nix store
           echo "Optimizing Nix store..."
           nix-store --optimise
-          
+
           echo "=== Maintenance Complete ==="
         ''}";
       };

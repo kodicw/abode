@@ -24,7 +24,13 @@
         config.allowUnfree = true;
       };
       extraSpecialArgs = {
-        inherit system polarbear llm-agents userModule inputs;
+        inherit
+          system
+          polarbear
+          llm-agents
+          userModule
+          inputs
+          ;
       };
       inherit modules;
     };
