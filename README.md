@@ -7,26 +7,20 @@ It uses Nix Flakes to provide a reproducible and declarative way to manage user-
 ## Structure
 
 ```
-home.nix                    # Main entry point
-├── config/home.nix          # Basic home config (username, stateVersion)
-├── packages.nix             # All Nix packages
-├── programs/
-│   ├── shells.nix           # Xonsh, Nushell, Bash, Starship, Carapace
-│   ├── terminals.nix        # Ghostty, Zellij
-│   └── devtools.nix         # Git, GitHub CLI, opencode, MCP, fastfetch
-├── session.nix              # Environment variables
-├── systemd/
-│   ├── opencode-server.nix  # opencode headless server
-│   └── rclone-gdrive.nix    # Google Drive FUSE mount
-└── activation/
-    └── crostini-icons.nix   # Crostini icon syncing
+├── modules/
+│   ├── core/                # home, packages, session, agent-skills
+│   ├── programs/            # shells, terminals (Ghostty, Zellij, Tmux), devtools, ai
+│   ├── services/            # opencode-server, rclone-gdrive, maintenance, session-keepalive
+│   ├── desktop/             # niri, shell
+│   └── activation/          # crostini-icons
 ```
 
 ## Features
 - **Nix Flakes**: For dependency management and reproducible builds.
 - **Bash**: Primary interactive shell with Starship prompt and Carapace completion.
 - **Nushell & Xonsh**: Alternative shells available for use.
-- **Zellij**: Terminal multiplexer for workspace management.
+- **Zellij & Tmux**: Terminal multiplexers for workspace management with `tmux-resurrect` and `tmux-continuum` auto-restoration.
+- **Session Keep-Alive**: Prevents Linux VM session loss on Android / Crostini via systemd user lingering (`loginctl enable-linger`), background keep-alive daemon, persistent Tmux server, and SSH client keep-alives.
 - **Wayland Optimized**: Configuration for Ghostty terminal with Wayland-specific session variables.
 - **Cloud Integration**: Automatic Google Drive mounting via `rclone` systemd service.
 

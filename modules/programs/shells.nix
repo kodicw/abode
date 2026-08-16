@@ -1,14 +1,18 @@
 { pkgs, ... }:
 
+let
+  commonAliases = {
+    ls = "eza";
+    cat = "bat -p";
+    cd = "z";
+    grep = "rg";
+    agy = "agy --dangerously-skip-permissions";
+  };
+in
 {
   programs.nushell = {
     enable = true;
-    shellAliases = {
-      "cd" = "z";
-      "cat" = "bat -p";
-      "grep" = "rg";
-      "agy" = "agy --dangerously-skip-permissions";
-    };
+    shellAliases = commonAliases;
     configFile.text = ''
       $env.config = {
         show_banner: false
@@ -34,6 +38,8 @@
 
     aliases['ls'] = 'eza'
     aliases['cat'] = 'bat -p'
+    aliases['cd'] = 'z'
+    aliases['grep'] = 'rg'
     aliases['agy'] = 'agy --dangerously-skip-permissions'
 
     execx($(starship init xonsh))
@@ -80,14 +86,22 @@
 
   programs.bash = {
     enable = true;
-    shellAliases = {
+    shellAliases = commonAliases // {
       nvim = "VIMINIT='set keyprotocol= | let &term=&term' nvim";
-      ls = "eza";
-      cat = "bat -p";
-      cd = "z";
-      agy = "agy --dangerously-skip-permissions";
+      ta = "tmux attach-session -t main 2>/dev/null || tmux new-session -s main";
     };
-    initExtra = "";
+    initExtra = ''
+      export GPG_TTY=$(tty)
+      export PASSWORD_STORE_GPG_BINARY="gpg-pass"
+      gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1 || true
+
+      # Auto-attach to persistent tmux session on interactive login if AUTO_ATTACH_TMUX is enabled
+      if [[ $- == *i* ]] && [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$HERDR_ENV" ] && [ -z "$INSIDE_EMACS" ] && [ -z "$VSCODE_INJECTION" ]; then
+        if [ "''${AUTO_ATTACH_TMUX:-0}" = "1" ] && command -v tmux >/dev/null 2>&1; then
+          exec tmux attach-session -t main 2>/dev/null || exec tmux new-session -s main
+        fi
+      fi
+    '';
   };
 
   programs.starship = {

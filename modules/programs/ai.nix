@@ -1,17 +1,33 @@
 {
   pkgs,
+  lib,
   llm-agents,
   system,
   config,
   ...
 }:
 
+let
+  isAarch64 = system == "aarch64-linux";
+in
+
 {
-  home.packages = [
-    pkgs.python3
-    llm-agents.packages.${system}.antigravity-cli
-    llm-agents.packages.${system}.herdr
-  ];
+  home.packages =
+    [
+      pkgs.python3
+      llm-agents.packages.${system}.antigravity-cli
+      llm-agents.packages.${system}.herdr
+    ]
+    ++ lib.optionals isAarch64 [
+      (pkgs.writeShellScriptBin "run-gdrive-mcp" ''
+        set -euo pipefail
+        SA_KEY_FILE=$(mktemp)
+        trap 'rm -f "$SA_KEY_FILE"' EXIT
+        ${pkgs.pass}/bin/pass show api/google/service_account_key > "$SA_KEY_FILE"
+        export GOOGLE_APPLICATION_CREDENTIALS="$SA_KEY_FILE"
+        exec ${pkgs.uv}/bin/uvx mcp-server-gdrive "$@"
+      '')
+    ];
 
   programs.antigravity = {
     enable = true;
@@ -58,11 +74,6 @@
           enabled = true;
         };
         # --- Tier 1 MCP additions (nixpkgs-native) ---
-        playwright = {
-          type = "local";
-          command = [ "${pkgs.playwright-mcp}/bin/playwright-mcp" ];
-          enabled = true;
-        };
         github = {
           type = "local";
           command = [
@@ -108,6 +119,26 @@
           ];
           enabled = true;
         };
+        fetch = {
+          type = "local";
+          command = [
+            "${pkgs.uv}/bin/uvx"
+            "--with"
+            "mcp<2"
+            "mcp-server-fetch"
+          ];
+          enabled = true;
+        };
+        time = {
+          type = "local";
+          command = [
+            "${pkgs.uv}/bin/uvx"
+            "--with"
+            "mcp<2"
+            "mcp-server-time"
+          ];
+          enabled = true;
+        };
       };
     };
     tui = {
@@ -145,13 +176,6 @@
         command = "${pkgs.mcp-server-memory}/bin/mcp-server-memory";
       };
       # --- Tier 1 MCP additions (nixpkgs-native) ---
-      playwright = {
-        command = "${pkgs.playwright-mcp}/bin/playwright-mcp";
-      };
-      # github = {
-      #   command = "${pkgs.github-mcp-server}/bin/github-mcp-server";
-      #   args = [ "stdio" ];
-      # };
       terraform = {
         command = "${pkgs.terraform-mcp-server}/bin/terraform-mcp-server";
       };
@@ -159,10 +183,6 @@
         command = "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking";
       };
       # --- Tier 1 MCP additions (fallbacks for non-nixpkgs) ---
-      # postgres = {
-      #   command = "${pkgs.uv}/bin/uvx";
-      #   args = [ "postgres-mcp" ];
-      # };
       docker = {
         command = "${pkgs.uv}/bin/uvx";
         args = [ "mcp-server-docker" ];
@@ -174,6 +194,27 @@
           "@ansible/ansible-mcp-server"
           "--stdio"
         ];
+      };
+      fetch = {
+        command = "${pkgs.uv}/bin/uvx";
+        args = [
+          "--with"
+          "mcp<2"
+          "mcp-server-fetch"
+        ];
+      };
+      time = {
+        command = "${pkgs.uv}/bin/uvx";
+        args = [
+          "--with"
+          "mcp<2"
+          "mcp-server-time"
+        ];
+      };
+      # --- Google Drive MCP Integration (droid/Crostini only) ---
+    } // lib.optionalAttrs isAarch64 {
+      gdrive = {
+        command = "${config.home.homeDirectory}/.nix-profile/bin/run-gdrive-mcp";
       };
     };
   };
@@ -190,12 +231,22 @@
   programs.pi-coding-agent = {
     enable = true;
     package = llm-agents.packages.${system}.pi;
+    context = ''
+      Environment: Home Manager managed Linux system utilizing Nix flakes.
+      Guidelines:
+      - Prefer Nix (`nix-shell`, Nix flakes, or Home Manager declarations) for managing tools and dependencies.
+      - Do not pollute the global system or mutate paths outside of Nix and the project workspace.
+    '';
     settings = {
       defaultProvider = "opencode-go";
       defaultModel = "deepseek-v4-flash";
       defaultThinkingLevel = "high";
       packages = [
-        "git:github.com/kodicw/pi-voice"
+        "npm:pi-mcp-adapter"
+        "npm:pi-web-access"
+        "npm:pi-subagents"
+        "npm:@juicesharp/rpiv-ask-user-question"
+        "npm:pi-lens"
       ];
     };
   };

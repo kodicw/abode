@@ -33,6 +33,35 @@ in
     };
   };
 
+  programs.tmux = {
+    enable = true;
+    shortcut = "a";
+    baseIndex = 1;
+    historyLimit = 50000;
+    keyMode = "vi";
+    terminal = "screen-256color";
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = resurrect;
+        extraConfig = ''
+          set -g @resurrect-capture-pane-contents 'on'
+          set -g @resurrect-strategy-nvim 'session'
+        '';
+      }
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '15'
+        '';
+      }
+    ];
+    extraConfig = ''
+      set -g status-style bg=default
+      set -g detach-on-destroy off
+    '';
+  };
+
   xdg.configFile."zellij/layouts/default.kdl".text = ''
     layout {
         pane size=1 borderless=true {

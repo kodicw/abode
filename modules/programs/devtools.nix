@@ -38,4 +38,10 @@
       PASSWORD_STORE_DIR = "$HOME/.password-store";
     };
   };
+
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    settings."*" = { };
+  };
 }

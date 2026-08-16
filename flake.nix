@@ -142,6 +142,7 @@
             systemd-opencode-server = ./modules/services/opencode-server.nix;
             systemd-rclone-gdrive = ./modules/services/rclone-gdrive.nix;
             systemd-maintenance = ./modules/services/maintenance.nix;
+            systemd-session-keepalive = ./modules/services/session-keepalive.nix;
 
             desktop-niri = ./modules/desktop/niri.nix;
             desktop-shell = ./modules/desktop/shell.nix;
@@ -153,14 +154,15 @@
                   self.homeManagerModules.desktop-shell
                 ];
               };
-            skills-nix-nixos-guide = ./modules/skills/nix-nixos-guide;
-            skills-justfile-guide = ./modules/skills/justfile-guide;
-            skills-xonsh-guide = ./modules/skills/xonsh-guide;
-            skills-pi-coding-agent = ./modules/skills/pi-coding-agent;
-            skills-gh-cli = ./modules/skills/gh-cli;
-            skills-contributing-guide = ./modules/skills/contributing-guide;
-            skills-opentofu-guide = ./modules/skills/opentofu-guide;
-            skills-home-manager-guide = ./modules/skills/home-manager-guide;
+            desktop-full =
+              { ... }:
+              {
+                imports = [
+                  self.homeManagerModules.default
+                  self.homeManagerModules.desktop
+                  self.homeManagerModules.activation-crostini-icons
+                ];
+              };
 
             default =
               { ... }:
@@ -174,14 +176,7 @@
                   self.homeManagerModules.programs-ai
                   self.homeManagerModules.session
                   self.homeManagerModules.systemd-maintenance
-                  self.homeManagerModules.skills-nix-nixos-guide
-                  self.homeManagerModules.skills-justfile-guide
-                  self.homeManagerModules.skills-xonsh-guide
-                  self.homeManagerModules.skills-pi-coding-agent
-                  self.homeManagerModules.skills-gh-cli
-                  self.homeManagerModules.skills-contributing-guide
-                  self.homeManagerModules.skills-opentofu-guide
-                  self.homeManagerModules.skills-home-manager-guide
+                  self.homeManagerModules.systemd-session-keepalive
                   self.homeManagerModules.skills-agent-skills
                 ];
               };
@@ -191,45 +186,27 @@
             kodicw = mylib.mkHome {
               system = "x86_64-linux";
               username = "kodicw";
-              modules = [
-                self.homeManagerModules.default
-                self.homeManagerModules.desktop
-                self.homeManagerModules.activation-crostini-icons
-              ];
+              modules = [ self.homeManagerModules.desktop-full ];
             };
             charles = mylib.mkHome {
               system = "x86_64-linux";
               username = "charles";
-              modules = [
-                self.homeManagerModules.default
-                self.homeManagerModules.desktop
-                self.homeManagerModules.activation-crostini-icons
-              ];
+              modules = [ self.homeManagerModules.desktop-full ];
             };
             nixos = mylib.mkHome {
               system = "x86_64-linux";
               username = "nixos";
-              modules = [
-                self.homeManagerModules.default
-              ];
+              modules = [ self.homeManagerModules.default ];
             };
             kodiwalls = mylib.mkHome {
               system = "x86_64-linux";
               username = "kodiwalls";
-              modules = [
-                self.homeManagerModules.default
-                self.homeManagerModules.desktop
-                self.homeManagerModules.activation-crostini-icons
-              ];
+              modules = [ self.homeManagerModules.desktop-full ];
             };
             droid = mylib.mkHome {
               system = "aarch64-linux";
               username = "droid";
-              modules = [
-                self.homeManagerModules.default
-                self.homeManagerModules.desktop
-                self.homeManagerModules.activation-crostini-icons
-              ];
+              modules = [ self.homeManagerModules.desktop-full ];
             };
             charlyndavi = mylib.mkHome {
               system = "x86_64-linux";
